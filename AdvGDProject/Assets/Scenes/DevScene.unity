@@ -1807,18 +1807,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 8492775899648567}
-  speed: 9
-  jumpHeight: 5
+  speed: 6
+  jumpHeight: 6
   gravity: -23
+  sprintSpeedMultiplier: 2
+  dashSpeedMultiplier: 4
+  dashDuration: 0.3
+  dashCooldown: 4
+  dashIndicator: {fileID: 881593061}
   groundCheck: {fileID: 673613193}
   groundDistance: 0.4
   groundMask:
     serializedVersion: 2
     m_Bits: 128
-  dashSpeedMultiplier: 4
-  dashDuration: 0.3
-  dashCooldown: 4
-  dashIndicator: {fileID: 881593061}
 --- !u!1 &8132003180880237395
 GameObject:
   m_ObjectHideFlags: 0

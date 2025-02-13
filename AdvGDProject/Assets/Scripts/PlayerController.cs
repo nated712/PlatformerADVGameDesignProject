@@ -11,22 +11,17 @@ public class PlayerController : MonoBehaviour
 
 
     [Header("Movement Settings")]
-    //movespeed
-    public float speed = 9f;
-    public float jumpHeight = 5f;
-    public float gravity = -18f;
-    //for gravity calculation
-    Vector3 velocity;
     
+    public float speed = 6f; //base move speed
+    public float jumpHeight = 6f;
+    public float gravity = -20f;
     
-    [Header("GroundCheck Settings")]
-    //stores transform of groundCheck object in inspector
-    public Transform groundCheck;
-    //size of sphere to check if grounded
-    public float groundDistance = 0.4f;
-    //store layer that we will count as ground
-    public LayerMask groundMask;
-    private bool isGrounded;
+    Vector3 velocity; //for gravity calculation
+    
+
+    [Header("Sprint Variables")]
+    public float sprintSpeedMultiplier = 1.5f; // Speed multiplier when sprinting
+    private bool isSprinting = false;
 
 
     [Header("Dash Variables")]
@@ -36,11 +31,30 @@ public class PlayerController : MonoBehaviour
     private bool canDash = true;
     private bool isDashing = false;
     private float origGrav; //Store gravity 
-    //UI indicator for dashing
-    [SerializeField] public Image dashIndicator;
+
+    // Double-tap dash variables
+    private float lastDashPressTime = -1f;
+    public float doubleTapTimeThreshold = 0.3f; // Max time between taps
+
+    
+    [SerializeField] public Image dashIndicator; //UI indicator for dashing
+    
+
+    [Header("GroundCheck Settings")]
+    
+    public Transform groundCheck; //stores transform of groundCheck object in inspector
+    
+    public float groundDistance = 0.4f; //size of sphere to check if grounded
+    
+    public LayerMask groundMask; //stores layer that we will count as ground
+    private bool isGrounded; //used to check is player is grounded
+
+
+
     void Start()
     {
         origGrav = gravity; // Store original gravity value
+
         UpdateDashUI();
     }
 
@@ -68,16 +82,29 @@ public class PlayerController : MonoBehaviour
         //create vector storing movement based on where player is looking
         Vector3 move = transform.right * x + transform.forward * z;
         
-        
-        // Dash activation
-        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash && move.magnitude > 0)
-        {
-            StartCoroutine(Dash());
+        // Sprint logic (only if not dashing)
+        isSprinting = Input.GetKey(KeyCode.LeftShift) && move.magnitude > 0 && !isDashing;
+
+
+        // Double-tap dash activation
+        if (Input.GetKeyDown(KeyCode.LeftShift)){
+            if (Time.time - lastDashPressTime < doubleTapTimeThreshold && canDash && move.magnitude > 0){
+                StartCoroutine(Dash());
+            }
+            lastDashPressTime = Time.time;
         }
 
         
-        //Moves character controller with created vector
-        float currentSpeed = isDashing ? speed * dashSpeedMultiplier : speed;
+        // Determine current speed
+        float currentSpeed = speed;
+        if (isDashing){
+            currentSpeed *= dashSpeedMultiplier; // Apply dash speed
+        }
+        else if (isSprinting){
+            currentSpeed *= sprintSpeedMultiplier; // Apply sprint speed
+        }
+
+
         controller.Move(move * currentSpeed * Time.deltaTime);
 
         // Gravity handling (only apply gravity if not dashing)
@@ -94,7 +121,7 @@ public class PlayerController : MonoBehaviour
         canDash = false;
         isDashing = true;
         gravity = 0f; // Disable gravity during dash
-        velocity.y = 0f; // Stop any downward movement
+        velocity.y = 0f; // Stop any vertical movement
         UpdateDashUI();
         yield return new WaitForSeconds(dashDuration);
 
