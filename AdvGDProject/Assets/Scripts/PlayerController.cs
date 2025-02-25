@@ -1,4 +1,3 @@
-
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,31 +5,29 @@ using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Variables
+
     [Header("Object References")]
-    //reference charactercontroller from inspector    
     public CharacterController controller;
 
     [Header("UI Components")]
-    [SerializeField] public TextMeshProUGUI speedText; // Reference to speed UI
-    [SerializeField] public Image dashIndicator; //UI indicator for dashing
+    [SerializeField] public TextMeshProUGUI speedText;
+    [SerializeField] public Image dashIndicator;
 
     [Header("Movement Settings")]
-    
-    public float speed = 7f; //base move speed
+    public float speed = 7f;
     public float jumpHeight = 6f;
-    public float gravity = -23f;
-    
-    Vector3 velocity; //for gravity calculation
-    
+    public float gravity = -26f;
+    private Vector3 velocity;
 
     [Header("Sprint Variables")]
-    public float sprintSpeedMultiplier = 2f; // Speed multiplier when sprinting
+    public float sprintSpeedMultiplier = 2f;
     private bool isSprinting = false;
 
     [Header("Air Acceleration")]
-    public float airSpeedMultiplier = 1.7f; // Max speed multiplier in air
-    public float airAccelerationRate = 1.8f; // How quickly the speed increases
-    public float groundDecelerationRate = 4f; // How quickly speed resets when grounded
+    public float airSpeedMultiplier = 1.7f;
+    public float airAccelerationRate = 1.8f;
+    public float groundDecelerationRate = 4f;
     private float currentSpeedMultiplier = 1f;
 
     [Header("Dash Variables")]
@@ -39,128 +36,176 @@ public class PlayerController : MonoBehaviour
     public float dashCooldown = 2.5f;
     private bool canDash = true;
     private bool isDashing = false;
-    private float origGrav; //Store gravity 
+    private float origGrav;
+
+
+    [Header("Slope Sliding Settings")]
+    public float slideAngleThreshold = 40f; // Angle above which sliding occurs
 
 
 
     [Header("GroundCheck Settings")]
-    
-    public Transform groundCheck; //stores transform of groundCheck object in inspector
-    
-    public float groundDistance = 0.4f; //size of sphere to check if grounded
-    
-    public LayerMask groundMask; //stores layer that we will count as ground
-    private bool isGrounded; //used to check is player is grounded
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    public LayerMask groundMask;
+    private bool isGrounded;
 
-
+    #endregion
 
     void Start()
     {
-        origGrav = gravity; // Store original gravity value
+        origGrav = gravity;
         UpdateDashUI();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //set up axis for movement
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
+        HandleMovement();
+        HandleJump();
+        HandleSprint();
+        HandleDash();
+        HandleAirAcceleration();
+        HandleSlopeSliding(); 
+        ApplyGravity();
+    }
 
-        //check if player is grounded
+    #region Movement Methods
+
+void HandleMovement()
+{
+    float x = Input.GetAxisRaw("Horizontal");
+    float z = Input.GetAxisRaw("Vertical");
+
+    Vector3 move = transform.right * x + transform.forward * z;
+
+    // Base speed with air acceleration multiplier
+    float finalSpeed = speed * currentSpeedMultiplier;
+
+    // Apply sprinting or dashing multiplier
+    if (isDashing)
+    {
+        finalSpeed *= dashSpeedMultiplier;
+    }
+    else if (isSprinting)
+    {
+        finalSpeed *= sprintSpeedMultiplier;
+    }
+
+    // Move the player
+    controller.Move(move.normalized * finalSpeed * Time.deltaTime);
+
+    // Update the speed UI with the true current speed
+    UpdateSpeedUI(finalSpeed);
+}
+
+    void HandleJump()
+    {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask.value);
 
-        //reset velocity if grounded
-        if(isGrounded && velocity.y < 0){
+        if (isGrounded && velocity.y < 0)
+        {
             velocity.y = -2f;
         }
 
-        //jump logic
-        if(Input.GetButtonDown("Jump") && isGrounded && !isDashing){
+        if (Input.GetButton("Jump") && isGrounded && !isDashing)
+        {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * origGrav);
         }
+    }
 
-        //create vector storing movement based on where player is looking
-        Vector3 move = transform.right * x + transform.forward * z;
-        
-        // Sprint logic (only if not dashing)
-        if (Input.GetKeyDown(KeyCode.LeftControl) && move.magnitude > 0 && !isDashing){
-            isSprinting = !isSprinting; // Toggle sprinting on/off
+    void HandleSprint()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftControl) && !isDashing)
+        {
+            isSprinting = !isSprinting;
         }
+    }
 
-
-        // Double-tap dash activation
-        if (Input.GetKeyDown(KeyCode.LeftShift)){
+    void HandleDash()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+        {
             StartCoroutine(Dash());
-            }
+        }
+    }
 
-
-        // air acceleration
-        if (!isGrounded && move.magnitude > 0){
-            // Accelerate toward max air speed smoothly
+    void HandleAirAcceleration()
+    {
+        if (!isGrounded && controller.velocity.magnitude > 0)
+        {
             currentSpeedMultiplier = Mathf.Lerp(currentSpeedMultiplier, airSpeedMultiplier, airAccelerationRate * Time.deltaTime);
         }
-        else{
-            // Decelerate back to normal speed when on the ground
+        else
+        {
             currentSpeedMultiplier = Mathf.Lerp(currentSpeedMultiplier, 1f, groundDecelerationRate * Time.deltaTime);
         }
+    }
 
-        // **Apply currentSpeedMultiplier correctly**
-        float currentSpeed = speed * currentSpeedMultiplier;
-    
-        if (isDashing){
-            currentSpeed *= dashSpeedMultiplier; // Apply dash speed
-        }
-        else if (isSprinting){
-            currentSpeed *= sprintSpeedMultiplier; // Apply sprint speed
-        }
-
-        controller.Move(move.normalized * currentSpeed * Time.deltaTime); 
-
-        // Gravity handling (only apply gravity if not dashing)
+    void ApplyGravity()
+    {
         if (!isDashing)
         {
             velocity.y += gravity * Time.deltaTime;
         }
 
         controller.Move(velocity * Time.deltaTime);
-    
-
-        UpdateSpeedUI(currentSpeed); // Update speed UI
-
     }
+
+    void HandleSlopeSliding()
+    {
+        if (Physics.Raycast(groundCheck.position, Vector3.down, out RaycastHit hit, groundDistance + 1.5f))
+        {
+            float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+
+            if (slopeAngle > slideAngleThreshold)
+            {
+                Vector3 slideDirection = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
+                controller.Move(slideDirection * (Mathf.Abs(gravity) * .7f) * Time.deltaTime);
+            }
+        }
+    }
+
+    #endregion
+
+    #region Dash Logic
 
     IEnumerator Dash()
     {
-        if(!canDash){
-            yield break;
-        }
         canDash = false;
         isDashing = true;
-        gravity = 0f; // Disable gravity during dash
-        velocity.y = 0f; // Stop any vertical movement
+        gravity = 0f;
+        velocity.y = 0f;
         UpdateDashUI();
 
         yield return new WaitForSeconds(dashDuration);
 
         isDashing = false;
-        gravity = origGrav; // Restore gravity after dash
+        gravity = origGrav;
 
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
         UpdateDashUI();
     }
 
-        void UpdateDashUI(){
+    #endregion
+
+    #region UI Methods
+
+    void UpdateDashUI()
+    {
         if (dashIndicator != null)
         {
             dashIndicator.color = canDash ? Color.green : Color.red;
         }
     }
-        void UpdateSpeedUI(float currentSpeed){
-        if (speedText != null){
-            speedText.text = "Speed: " + currentSpeed.ToString("F2"); // Display speed with two decimals
+
+    void UpdateSpeedUI(float currentSpeed)
+    {
+        if (speedText != null)
+        {
+            speedText.text = "Speed: " + currentSpeed.ToString("F2");
         }
     }
 
+    #endregion
 }
