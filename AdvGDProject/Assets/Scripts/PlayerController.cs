@@ -208,4 +208,13 @@ void HandleMovement()
     }
 
     #endregion
+
+    #region Damage Handling
+    
+    void OnCollisionEnter(Collision collision)
+    {
+       
+    }
+
+    #endregion
 }
