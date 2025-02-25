@@ -3,22 +3,20 @@ using UnityEngine;
 public class ProjectileCollision : MonoBehaviour
 {
 //    public GameObject impactEffect;
+
     public float radius = 3;
     public int damageAmount = 15;
 
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
         //GameObject impact = Instantiate(impactEffect, transform.position, Quaternion.identity);
         //Destroy(impact, 2);
-        Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
-        foreach(Collider nearbyObject in colliders)
+        if (other.gameObject.CompareTag("Player"))
         {
-            if (nearbyObject.tag == "Player")
-            {
-                PlayerManager.TakeDamage(damageAmount);
-            }
+            other.gameObject.GetComponent<PlayerHealthManager>().TakeDamage(damageAmount);
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
+        
     }
 }

@@ -3,30 +3,31 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerHealthManager : MonoBehaviour
 {
-    public static int playerHP = 100;
+    [SerializeField] public float playerHP = 100f;
     public TextMeshProUGUI playerHPText;
-    public static bool isGameOver;
+    public bool isGameOver;
 
     void Start()
     {
+        playerHPText.text = (playerHP).ToString();
         isGameOver = false;
     }
 
     void Update()
     {
-        playerHPText.text = "+" + playerHP;
         if (isGameOver)
         {
-            //Game over sequence.
+            playerHPText.text = "Game Over";
         }
 
     }
 
-    public static void TakeDamage(int damageAmount)
+    public void TakeDamage(float damageAmount)
     {
         playerHP -= damageAmount;
+        playerHPText.text = (playerHP).ToString();
         if (playerHP <= 0)
         {
             isGameOver = true;
