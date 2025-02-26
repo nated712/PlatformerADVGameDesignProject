@@ -9,6 +9,7 @@ public class TurretControl : MonoBehaviour
     public Transform head, barrel;
     public GameObject _projectile;
     public float fireRate, nextFire;
+    public float shotSpeed;
 
     void Start()
     {
@@ -34,7 +35,7 @@ public class TurretControl : MonoBehaviour
     void shoot() //Clones whatever the projectile is set to, assumes Rigidbody, and adds force in the direction of the barrel.
     {
         GameObject clone = Instantiate(_projectile, barrel.position, head.rotation);
-        clone.GetComponent<Rigidbody>().AddForce(head.forward * 1500);
+        clone.GetComponent<Rigidbody>().AddForce(head.forward * shotSpeed);
         Destroy(clone, 10);
     }
 }

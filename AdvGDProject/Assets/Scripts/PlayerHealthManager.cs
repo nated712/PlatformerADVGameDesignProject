@@ -5,32 +5,31 @@ using UnityEngine;
 
 public class PlayerHealthManager : MonoBehaviour
 {
-    [SerializeField] public float playerHP = 100f;
-    public TextMeshProUGUI playerHPText;
-    public bool isGameOver;
-
+    [SerializeField] public int playerMaxHP = 1000;
+    public int currentHP;
+    public HealthBar healthBar;
+    public int healthDrainRate = 15;
     void Start()
     {
-        playerHPText.text = (playerHP).ToString();
-        isGameOver = false;
+        currentHP = playerMaxHP;
+        healthBar.SetMaxHealth(playerMaxHP);
+        // Start health drain
+        StartCoroutine(DrainHealthOverTime());
     }
 
-    void Update()
+    public void TakeDamage(int damageAmount)
     {
-        if (isGameOver)
-        {
-            playerHPText.text = "Game Over";
-        }
-
+        currentHP -= damageAmount;
+        currentHP = Mathf.Clamp(currentHP, 0, playerMaxHP);
+        healthBar.SetHealth(currentHP);
     }
 
-    public void TakeDamage(float damageAmount)
+    IEnumerator DrainHealthOverTime()
     {
-        playerHP -= damageAmount;
-        playerHPText.text = (playerHP).ToString();
-        if (playerHP <= 0)
+        while (currentHP > 0)
         {
-            isGameOver = true;
+            yield return new WaitForSeconds(.3f); // Drains every second
+            TakeDamage(healthDrainRate);
         }
     }
 }

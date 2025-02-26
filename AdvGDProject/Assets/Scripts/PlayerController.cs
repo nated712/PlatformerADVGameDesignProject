@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Timers;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,8 +26,8 @@ public class PlayerController : MonoBehaviour
     private bool isSprinting = false;
 
     [Header("Air Acceleration")]
-    public float airSpeedMultiplier = 1.7f;
-    public float airAccelerationRate = 1.8f;
+    public float airSpeedMultiplier = 1.6f;
+    public float airAccelerationRate = 4f;
     public float groundDecelerationRate = 4f;
     private float currentSpeedMultiplier = 1f;
 
@@ -41,7 +42,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Slope Sliding Settings")]
     public float slideAngleThreshold = 40f; // Angle above which sliding occurs
-
+    public bool isSliding = false;
 
 
     [Header("GroundCheck Settings")]
@@ -49,6 +50,11 @@ public class PlayerController : MonoBehaviour
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
     private bool isGrounded;
+
+
+    [Header("Audio Settings")]
+    public AudioSource audioSource;
+    public AudioClip dashReadySound;
 
     #endregion
 
@@ -77,6 +83,11 @@ void HandleMovement()
     float z = Input.GetAxisRaw("Vertical");
 
     Vector3 move = transform.right * x + transform.forward * z;
+
+    if (move.magnitude > 1) // Prevent diagonal speed increase
+    {
+        move.Normalize();
+    }
 
     // Base speed with air acceleration multiplier
     float finalSpeed = speed * currentSpeedMultiplier;
@@ -107,7 +118,7 @@ void HandleMovement()
             velocity.y = -2f;
         }
 
-        if (Input.GetButton("Jump") && isGrounded && !isDashing)
+        if (Input.GetButton("Jump") && isGrounded && !isSliding)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * origGrav);
         }
@@ -115,7 +126,7 @@ void HandleMovement()
 
     void HandleSprint()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && !isDashing)
+        if (Input.GetKeyDown(KeyCode.E) && !isDashing)
         {
             isSprinting = !isSprinting;
         }
@@ -151,19 +162,32 @@ void HandleMovement()
         controller.Move(velocity * Time.deltaTime);
     }
 
-    void HandleSlopeSliding()
+void HandleSlopeSliding()
+{
+    if (Physics.Raycast(groundCheck.position, Vector3.down, out RaycastHit hit, groundDistance + 1.5f))
     {
-        if (Physics.Raycast(groundCheck.position, Vector3.down, out RaycastHit hit, groundDistance + 1.5f))
-        {
-            float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+        float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
 
-            if (slopeAngle > slideAngleThreshold)
-            {
-                Vector3 slideDirection = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
-                controller.Move(slideDirection * (Mathf.Abs(gravity) * .7f) * Time.deltaTime);
-            }
+        if (slopeAngle > slideAngleThreshold)
+        {
+            isSliding = true;
+            isGrounded = false;
+
+            // Get slide direction along the slope
+            Vector3 slideDirection = Vector3.ProjectOnPlane(Vector3.down, hit.normal).normalized;
+
+            // Ensure sliding happens even if the player is not moving
+            float slideSpeed = Mathf.Max(controller.velocity.magnitude, speed * 1f); // Ensure a minimum speed
+
+            // Apply sliding movement
+            controller.Move(slideDirection * slideSpeed * Time.deltaTime);
+            
+            return;
         }
     }
+
+    isSliding = false; // Reset sliding state when not on a slope
+}
 
     #endregion
 
@@ -173,18 +197,40 @@ void HandleMovement()
     {
         canDash = false;
         isDashing = true;
-        gravity = 0f;
-        velocity.y = 0f;
+        
         UpdateDashUI();
 
+        //Player takes damage when they dash
+        PlayerHealthManager healthManager = GetComponent<PlayerHealthManager>();
+        if (healthManager != null)
+        {
+            healthManager.TakeDamage(50);
+        }
+
         yield return new WaitForSeconds(dashDuration);
-
         isDashing = false;
-        gravity = origGrav;
-
+        float decelerationTime = 1f;
+        float timeElapsed = 0f;
+        //return player to their original speed so you dont lose the speed you had
+        float storedMult = currentSpeedMultiplier + .2f;
+        //DASH DECELERATION
+        while(timeElapsed < decelerationTime){
+            timeElapsed += Time.deltaTime;
+            float t = timeElapsed / decelerationTime;
+            currentSpeedMultiplier = Mathf.Lerp(dashSpeedMultiplier, storedMult, t);
+            yield return null;
+        }
+        currentSpeedMultiplier = storedMult;
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
         UpdateDashUI();
+        
+        // Play dash-ready sound when cooldown ends
+        if (audioSource != null && dashReadySound != null)
+        {
+            audioSource.PlayOneShot(dashReadySound);
+        }
+
     }
 
     #endregion
@@ -195,7 +241,7 @@ void HandleMovement()
     {
         if (dashIndicator != null)
         {
-            dashIndicator.color = canDash ? Color.green : Color.red;
+            dashIndicator.color = canDash ? Color.yellow : Color.black;
         }
     }
 
@@ -203,17 +249,8 @@ void HandleMovement()
     {
         if (speedText != null)
         {
-            speedText.text = "Speed: " + currentSpeed.ToString("F2");
+            speedText.text = currentSpeed.ToString("F2");
         }
-    }
-
-    #endregion
-
-    #region Damage Handling
-    
-    void OnCollisionEnter(Collision collision)
-    {
-       
     }
 
     #endregion
