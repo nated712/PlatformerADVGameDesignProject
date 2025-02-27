@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class GunControl : MonoBehaviour
 {
+    public Transform gunBarrell;
+    public TrailRenderer bulletTrail;
+
+
+
     public float damage = 10f;
     public float range = 100f;
 
@@ -19,6 +24,12 @@ public class GunControl : MonoBehaviour
 
     void Shoot()
     {
+        var bullet = Instantiate(bulletTrail, gunBarrell.position, Quaternion.identity);
+        bullet.AddPosition(gunBarrell.position);
+        {
+            bullet.transform.position = transform.position + (fpsCam.transform.forward * 200);
+        }
+        
         muzzleFlash.Play();
         RaycastHit hit;
         if(Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))

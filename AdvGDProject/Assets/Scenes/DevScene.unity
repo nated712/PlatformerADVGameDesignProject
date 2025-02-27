@@ -895,11 +895,12 @@ Transform:
   m_GameObject: {fileID: 585786994}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.335, y: -0.60739565, z: 1.63}
-  m_LocalScale: {x: 2, y: 0.35, z: 0.35}
+  m_LocalPosition: {x: 0.335, y: -0.539, z: 0.507}
+  m_LocalScale: {x: 1.5, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1039310066}
+  - {fileID: 1288355185}
   m_Father: {fileID: 1595894125}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!65 &585786996
@@ -946,7 +947,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 6be2c334c36200642b0ba80581d118a8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -988,6 +989,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a4f4f00d89f664e87cbd92080d6488, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gunBarrell: {fileID: 1288355185}
+  bulletTrail: {fileID: 5133283773268842770, guid: 2cef977a0241e2e45a58ab82321f2555, type: 3}
   damage: 10
   range: 100
   fpsCam: {fileID: 1595894128}
@@ -7403,6 +7406,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1254741247}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1288355184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1288355185}
+  m_Layer: 0
+  m_Name: GunTip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1288355185
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288355184}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.5, y: 0.03, z: 0.23}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 585786995}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1295890886
 GameObject:
   m_ObjectHideFlags: 0
@@ -7627,7 +7661,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 4.229186e-39, y: 6.994994e-31, z: 3.214307e-39, w: 4.229281e-39}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
