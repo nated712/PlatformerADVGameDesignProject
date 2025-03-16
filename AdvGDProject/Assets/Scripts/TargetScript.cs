@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Target : MonoBehaviour
 {
-   public float health = 50f;
-   public Target GreaterParent;
+    public float health = 50f;
+    public Target GreaterParent;
 
     public void TakeDamage (float amount)
     {
@@ -17,6 +17,7 @@ public class Target : MonoBehaviour
             if (health <= 0f)
             {
                 Destroy(gameObject);
+
             }
         }
     }
