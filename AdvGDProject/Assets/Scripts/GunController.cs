@@ -29,7 +29,6 @@ public class GunControl : MonoBehaviour
         {
             bullet.transform.position = transform.position + (fpsCam.transform.forward * 200);
         }
-        
         muzzleFlash.Play();
         RaycastHit hit;
         if(Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
