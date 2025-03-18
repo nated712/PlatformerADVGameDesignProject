@@ -20,6 +20,13 @@ public class ProjectileCollision : MonoBehaviour
             playerHealth.TakeDamage(damageAmount);
             Destroy(gameObject);
         }
+        if(other.gameObject.CompareTag("Turret"))
+        {
+            //Destroy if not a turret tag
+            
+        } else{
+            Destroy(gameObject);
+        }
         
     }
 }
