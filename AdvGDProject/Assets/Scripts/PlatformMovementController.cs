@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class PlatformMovementController : MonoBehaviour
 {
     public float roationSpeed = 5f;
 
