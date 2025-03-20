@@ -5,7 +5,7 @@ public class GunControl : MonoBehaviour
     public Transform gunBarrell;
     public TrailRenderer bulletTrail;
 
-    public float damage = 10f;
+    public float damage = 30f;
     public float range = 100f;
 
     public Camera fpsCam;

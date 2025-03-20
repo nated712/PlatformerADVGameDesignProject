@@ -288,7 +288,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -1093,7 +1094,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -1847,11 +1849,14 @@ MonoBehaviour:
   dashDuration: 0.3
   dashCooldown: 2.5
   slideAngleThreshold: 40
+  isSliding: 0
   groundCheck: {fileID: 1255390372}
   groundDistance: 0.4
   groundMask:
     serializedVersion: 2
     m_Bits: 128
+  audioSource: {fileID: 0}
+  dashReadySound: {fileID: 0}
 --- !u!143 &1744569322
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1909,9 +1914,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddb54988194d92247b3f1d25e7e23f74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHP: 100
-  playerHPText: {fileID: 271640559}
-  isGameOver: 0
+  playerMaxHP: 1000
+  currentHP: 0
+  healthBar: {fileID: 0}
+  healthDrainRate: 15
 --- !u!1 &1814896518
 GameObject:
   m_ObjectHideFlags: 0
@@ -2042,6 +2048,7 @@ MonoBehaviour:
   _projectile: {fileID: 3694942220862522270, guid: 8af0c628be1d51a428107f32aae55c9e, type: 3}
   fireRate: 1.5
   nextFire: 0
+  shotSpeed: 0
 --- !u!1 &1840116187
 GameObject:
   m_ObjectHideFlags: 0
