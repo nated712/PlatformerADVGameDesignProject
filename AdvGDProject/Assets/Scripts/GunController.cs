@@ -1,15 +1,28 @@
 using UnityEngine;
+using UnityEngine.UI;
+
+using System.Collections;
+using System.Timers;
 
 public class GunControl : MonoBehaviour
 {
     public Transform gunBarrell;
     public TrailRenderer bulletTrail;
 
+    
     public float damage = 30f;
     public float range = 100f;
 
     public Camera fpsCam;
     public ParticleSystem muzzleFlash;
+
+    public Image hitMarker;
+    public float hitmarkerDuration = 0.15f;
+
+    void Start()
+    {
+        hitMarker.enabled = false;
+    }
 
     // Update is called once per frame
     void Update()
@@ -38,7 +51,15 @@ public class GunControl : MonoBehaviour
             if (target != null)
             {
                 target.TakeDamage(damage);
+                StartCoroutine(ActivateHitMarker());
             }
         }
+    }
+
+    IEnumerator ActivateHitMarker()
+    {
+        hitMarker.enabled = true;
+        yield return new WaitForSeconds(hitmarkerDuration);
+        hitMarker.enabled = false;
     }
 }
