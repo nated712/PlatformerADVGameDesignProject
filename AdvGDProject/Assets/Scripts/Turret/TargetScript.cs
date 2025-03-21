@@ -4,6 +4,7 @@ public class Target : MonoBehaviour
 {
     public float health = 50f;
     private PlayerHealthManager phm;
+    private TurretCountManager turretManager;
 
     [SerializeField] private GameObject brokenTurretPrefab; // Assign in Inspector
     [SerializeField] private GameObject smokeEffectPrefab;  // Assign in Inspector
@@ -21,6 +22,18 @@ public class Target : MonoBehaviour
         {
             Debug.LogError("PlayerHealthManager not found on Player object!");
         }
+
+        GameObject TimeManager = GameObject.FindWithTag("TimeManager");
+        if (TimeManager != null)
+        {
+            turretManager = TimeManager.GetComponent<TurretCountManager>();
+        }
+        else
+        {
+            Debug.LogError("TimeManager not found in the scene!");
+        }
+
+        turretManager.UpdateTurretCount();
     }
 
     public void TakeDamage(float amount)
@@ -34,6 +47,8 @@ public class Target : MonoBehaviour
 
     private void Die()
     {
+        //For turretCountManager
+        turretManager.OnTurretDestroyed();
         // Heal the player on kill
         if (phm != null)
         {
@@ -49,6 +64,8 @@ public class Target : MonoBehaviour
         {
             brokenTurret = Instantiate(brokenTurretPrefab, transform.position, transform.rotation);
         }
+
+
 
         // Reattach turret head to the broken turret (or leave it floating)
         if (turretHead != null)

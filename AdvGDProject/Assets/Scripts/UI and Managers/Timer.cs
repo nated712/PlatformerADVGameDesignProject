@@ -7,6 +7,7 @@ public class Timer : MonoBehaviour
     private float elapsedTime = 0f;
     private bool isRunning = false;
     private bool isTimerStopped = false; // Flag to check if the timer has been stopped
+    private float timeReductionAmount = 10f; // Amount of time to reduce (in seconds)
 
     void Start()
     {
@@ -51,5 +52,13 @@ public class Timer : MonoBehaviour
         UpdateTimerDisplay();
         isTimerStopped = false; // Allow the timer to be started again after reset
         isRunning = true; // Start the timer again after reset
+    }
+
+    // Method to reduce time when all turrets are destroyed
+    public void ReduceTime()
+    {
+        elapsedTime -= timeReductionAmount; // Reduce the time by a specified amount
+        if (elapsedTime < 0) elapsedTime = 0f; // Ensure time doesn't go negative
+        UpdateTimerDisplay();
     }
 }

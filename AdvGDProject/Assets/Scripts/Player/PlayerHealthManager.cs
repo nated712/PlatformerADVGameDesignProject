@@ -17,7 +17,14 @@ public class PlayerHealthManager : MonoBehaviour
         // Start health drain
         StartCoroutine(DrainHealthOverTime());
     }
-
+    void Update()
+    {
+        // Check for "R" key press to reset the stage
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Die();
+        }
+    }
     public void TakeDamage(int damageAmount)
     {
         currentHP -= damageAmount;
