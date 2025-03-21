@@ -16,25 +16,25 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public Image dashIndicator;
 
     [Header("Movement Settings")]
-    public float speed = 7f;
-    public float jumpHeight = 6f;
-    public float gravity = -26f;
+    public float speed = 12f;
+    public float jumpHeight = 5f;
+    public float gravity = -28f;
     private Vector3 velocity;
 
     [Header("Sprint Variables")]
-    public float sprintSpeedMultiplier = 2f;
+    public float sprintSpeedMultiplier = 1f;
     private bool isSprinting = false;
 
     [Header("Air Acceleration")]
-    public float airSpeedMultiplier = 1.6f;
-    public float airAccelerationRate = 4f;
-    public float groundDecelerationRate = 4f;
+    public float airSpeedMultiplier = 1.7f;
+    public float airAccelerationRate = .2f;
+    public float groundDecelerationRate = 3f;
     private float currentSpeedMultiplier = 1f;
 
     [Header("Dash Variables")]
-    public float dashSpeedMultiplier = 3f;
-    public float dashDuration = 0.3f;
-    public float dashCooldown = 2.5f;
+    public float dashSpeedMultiplier = 2.7f;
+    public float dashDuration = 0.2f;
+    public float dashCooldown = 2f;
     private bool canDash = true;
     private bool isDashing = false;
     private float origGrav;

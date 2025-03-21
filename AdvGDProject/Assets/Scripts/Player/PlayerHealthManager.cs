@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class PlayerHealthManager : MonoBehaviour
@@ -22,6 +23,12 @@ public class PlayerHealthManager : MonoBehaviour
         currentHP -= damageAmount;
         currentHP = Mathf.Clamp(currentHP, 0, playerMaxHP);
         healthBar.SetHealth(currentHP);
+
+        // Check if health is 0 or below, and if so, call Die method
+        if (currentHP <= 0)
+        {
+            Die();
+        }
     }
 
     IEnumerator DrainHealthOverTime()
@@ -31,5 +38,10 @@ public class PlayerHealthManager : MonoBehaviour
             yield return new WaitForSeconds(.3f); // Drains every second
             TakeDamage(healthDrainRate);
         }
+    }
+
+    public void Die(){
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
