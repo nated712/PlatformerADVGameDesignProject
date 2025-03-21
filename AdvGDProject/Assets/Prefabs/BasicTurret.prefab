@@ -368,7 +368,7 @@ MonoBehaviour:
   _projectile: {fileID: 3694942220862522270, guid: 8af0c628be1d51a428107f32aae55c9e, type: 3}
   fireRate: 1.5
   nextFire: 0
-  shotSpeed: 3000
+  shotSpeed: 6000
 --- !u!114 &5650093286974320293
 MonoBehaviour:
   m_ObjectHideFlags: 0

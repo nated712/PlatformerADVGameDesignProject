@@ -7,7 +7,7 @@ public class Timer : MonoBehaviour
     private float elapsedTime = 0f;
     private bool isRunning = false;
     private bool isTimerStopped = false; // Flag to check if the timer has been stopped
-    private float timeReductionAmount = 10f; // Amount of time to reduce (in seconds)
+    private float timeReductionAmount = 5f; // Amount of time to reduce (in seconds)
 
     void Start()
     {
