@@ -1,0 +1,96 @@
+using UnityEngine;
+
+public class RoomTurretTarget : MonoBehaviour
+{
+    public float health = 50f;
+    private PlayerHealthManager phm;
+    //private TurretCountManager turretManager;
+
+    [SerializeField] private GameObject brokenTurretPrefab; // Assign in Inspector
+    [SerializeField] private GameObject smokeEffectPrefab;  // Assign in Inspector
+    [SerializeField] private Transform turretHead;          // Assign in Inspector
+
+    private void Start()
+    {
+        GameObject player = GameObject.FindWithTag("Player"); 
+        if (player != null)
+        {
+            phm = player.GetComponent<PlayerHealthManager>();
+        }
+
+        if (phm == null)
+        {
+            Debug.LogError("PlayerHealthManager not found on Player object!");
+        }
+
+       /* GameObject TimeManager = GameObject.FindWithTag("TimeManager");
+        if (TimeManager != null)
+        {
+            turretManager = TimeManager.GetComponent<TurretCountManager>();
+        }
+        else
+        {
+            Debug.LogError("TimeManager not found in the scene!");
+        }
+
+        turretManager.UpdateTurretCount();
+        */
+    }
+
+    public void TakeDamage(float amount)
+    {
+        Debug.Log("I'm taking damage!");
+        health -= amount;
+        if (health <= 0f)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        //For turretCountManager
+        //turretManager.OnTurretDestroyed();
+        // Heal the player on kill
+        if (phm != null)
+        {
+            phm.TakeDamage(-300);
+        }
+        /*
+        // Store the turret head rotation
+        Quaternion headRotation = turretHead.rotation;
+
+        // Spawn broken turret
+        GameObject brokenTurret = null;
+        if (brokenTurretPrefab != null)
+        {
+            brokenTurret = Instantiate(brokenTurretPrefab, transform.position, transform.rotation);
+        }
+
+
+
+        // Reattach turret head to the broken turret (or leave it floating)
+        if (turretHead != null)
+        {
+            turretHead.SetParent(null); // Detach from original turret body
+            turretHead.rotation = headRotation; // Keep its rotation
+
+            if (brokenTurret != null)
+            {
+                turretHead.SetParent(brokenTurret.transform); // Optional: Attach to broken turret
+            }
+        }
+
+        // Spawn smoke effect
+        if (smokeEffectPrefab != null)
+        {
+            GameObject smoke = Instantiate(smokeEffectPrefab, turretHead.position, Quaternion.identity);
+            smoke.transform.SetParent(null); // Detach smoke from broken turret
+        }
+        */
+
+        Debug.Log("I'm dying!");
+        // Destroy the original turret body
+        Destroy(gameObject);
+    }
+}
