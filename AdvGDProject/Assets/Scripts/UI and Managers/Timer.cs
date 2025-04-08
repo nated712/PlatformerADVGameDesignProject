@@ -61,4 +61,18 @@ public class Timer : MonoBehaviour
         if (elapsedTime < 0) elapsedTime = 0f; // Ensure time doesn't go negative
         UpdateTimerDisplay();
     }
+
+    public string ReturnTimer()
+    {
+        int minutes = Mathf.FloorToInt(elapsedTime / 60);
+        int seconds = Mathf.FloorToInt(elapsedTime % 60);
+        int milliseconds = Mathf.FloorToInt((elapsedTime * 1000) % 1000); // Get milliseconds
+        string returnText = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
+        return returnText;
+    }
+
+    public float ReturnElapsedTime()
+    {
+        return elapsedTime;
+    }
 }
