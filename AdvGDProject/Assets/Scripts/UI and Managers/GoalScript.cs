@@ -22,7 +22,7 @@ public class Goal : MonoBehaviour
     //Rank Times
     public float SThresholdTime = 12f;
     public float AThresholdTime = 16f;
-    public float BThresholdTime = 20f;
+    public float BThresholdTime = 23f;
 
 
     [SerializeField] private Timer timer; // Drag and drop Timer object in Inspector
@@ -43,38 +43,40 @@ public class Goal : MonoBehaviour
             }
 
             // Generating Results
-            TurretsLeftText.text = GameObject.FindGameObjectsWithTag("Turret").Length.ToString();
+            int TurretsLeft = GameObject.FindGameObjectsWithTag("Turret").Length;
+            TurretsLeftText.text = TurretsLeft.ToString();
+                        //Bonus Determination
+            if (TurretsLeft == 0)
+            {
+                timer.ReduceTime();
+                BonusText.text = "All Turrets Destroyed: -00.05.00";
+            }
             PlayerTimeText.text = timer.ReturnTimer();
             PlayerElapsedTime = timer.ReturnElapsedTime();
+            
+
 
             //Did the Player beat their best time?
             if (BestElapsedTime > PlayerElapsedTime)
             {
-                BestTimeText.text = timer.ReturnTimer();
+                BestTimeText.text = PlayerTimeText.text;
             } else {
-                BestTimeText.text = "00:25:000";
+                BestTimeText.text = "00:99:000";
             }
 
             //Rank Determination
-            if (PlayerElapsedTime > SThresholdTime)
+            if (PlayerElapsedTime < SThresholdTime)
             {
                 RankText.text = "S";
-            } else if ((SThresholdTime > PlayerElapsedTime) && (PlayerElapsedTime > AThresholdTime))
+            } else if (PlayerElapsedTime < AThresholdTime)
             {
                 RankText.text = "A";
-            } else if ((AThresholdTime > PlayerElapsedTime) && (PlayerElapsedTime > BThresholdTime))
+            } else if (PlayerElapsedTime < BThresholdTime)
             {
                 RankText.text = "B";
             } else {
                 RankText.text = "C";
             }
-
-            //Bonus Determination
-            if (TurretsLeftText.text == "0")
-            {
-                BonusText.text = "All Turrets Destroyed: -00.05.00";
-            }
-
             ResultScreen.gameObject.SetActive(true);
         }
     }
