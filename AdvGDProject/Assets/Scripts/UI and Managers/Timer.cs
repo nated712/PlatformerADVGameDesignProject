@@ -62,11 +62,11 @@ public class Timer : MonoBehaviour
         UpdateTimerDisplay();
     }
 
-    public string ReturnTimer()
+    public string ReturnTimerText(float TimerFloat)
     {
-        int minutes = Mathf.FloorToInt(elapsedTime / 60);
-        int seconds = Mathf.FloorToInt(elapsedTime % 60);
-        int milliseconds = Mathf.FloorToInt((elapsedTime * 1000) % 1000); // Get milliseconds
+        int minutes = Mathf.FloorToInt(TimerFloat / 60);
+        int seconds = Mathf.FloorToInt(TimerFloat % 60);
+        int milliseconds = Mathf.FloorToInt((TimerFloat * 1000) % 1000); // Get milliseconds
         string returnText = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
         return returnText;
     }

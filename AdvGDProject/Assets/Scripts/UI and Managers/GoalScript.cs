@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 
 
@@ -26,10 +27,21 @@ public class Goal : MonoBehaviour
 
 
     [SerializeField] private Timer timer; // Drag and drop Timer object in Inspector
+    [SerializeField] private BestTimeManager besttimemanager; // Drag and drop Timer object in Inspector
 
     void Start()
     {
         ResultScreen.gameObject.SetActive(false);
+
+        BestTimeText.text = besttimemanager.GetBestTimeText();
+    }
+
+    void Update()
+    {
+        if (ResultScreen.gameObject.activeSelf == true && Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,23 +57,26 @@ public class Goal : MonoBehaviour
             // Generating Results
             int TurretsLeft = GameObject.FindGameObjectsWithTag("Turret").Length;
             TurretsLeftText.text = TurretsLeft.ToString();
-                        //Bonus Determination
+
+            //Bonus Determination
             if (TurretsLeft == 0)
             {
                 timer.ReduceTime();
                 BonusText.text = "All Turrets Destroyed: -00.05.00";
             }
-            PlayerTimeText.text = timer.ReturnTimer();
-            PlayerElapsedTime = timer.ReturnElapsedTime();
-            
 
+            PlayerElapsedTime = timer.ReturnElapsedTime();
+            PlayerTimeText.text = timer.ReturnTimerText(PlayerElapsedTime);
+            Debug.Log(PlayerTimeText);
+            
 
             //Did the Player beat their best time?
             if (BestElapsedTime > PlayerElapsedTime)
             {
+                besttimemanager.SetBestTime(PlayerElapsedTime);
                 BestTimeText.text = PlayerTimeText.text;
             } else {
-                BestTimeText.text = "00:99:000";
+                BestTimeText.text = besttimemanager.GetBestTimeText();
             }
 
             //Rank Determination
@@ -77,7 +92,10 @@ public class Goal : MonoBehaviour
             } else {
                 RankText.text = "C";
             }
+
             ResultScreen.gameObject.SetActive(true);
+
+
         }
     }
 }
