@@ -1,3 +1,4 @@
 Hello, this is me and Jordan's project for ITCS 4231, Advanced Game Design.
 
-Main is for pushing approved changes, and I aim for the preMerge branch to be used to test before we commit to main but I'm not entirely sure if that will be used.
+Oil Heart is a 3D Platformer where you play as a robot low on fuel, 
+and the only way to make it to your goal is to defeat the other robots in your way and take whatever fuel they had left in them.
