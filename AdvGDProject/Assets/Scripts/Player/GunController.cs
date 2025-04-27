@@ -9,6 +9,8 @@ public class GunControl : MonoBehaviour
     public Transform gunBarrell;
     public TrailRenderer bulletTrail;
 
+    public float fireCooldown = 0.15f;
+    private float nextTimeToFire = 0f;
     
     public float damage = 30f;
     public float range = 100f;
@@ -27,8 +29,9 @@ public class GunControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && Time.time >= nextTimeToFire)
         {
+            nextTimeToFire = Time.time + fireCooldown;
             Shoot();
         }
     }

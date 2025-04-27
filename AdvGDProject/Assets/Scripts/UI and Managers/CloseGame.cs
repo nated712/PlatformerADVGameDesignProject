@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class CloseGame : MonoBehaviour
 {
 
@@ -7,7 +7,7 @@ public class CloseGame : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Application.Quit();
+            SceneManager.LoadScene(0);
         }
     }
 }

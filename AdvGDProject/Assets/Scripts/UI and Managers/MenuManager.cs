@@ -2,7 +2,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class MenuManager : MonoBehaviour
 {
+    void Start(){
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
+
+    }
     public void GoToGame(){
 
         SceneManager.LoadScene(2);

@@ -17,7 +17,7 @@ public class BestTimeManager : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 
     public void SetBestTime(float NewBestTime)
