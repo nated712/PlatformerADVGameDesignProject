@@ -7,14 +7,13 @@ using UnityEngine.SceneManagement;
 
 public class Goal : MonoBehaviour
 {
-
     public GameObject ResultScreen;
 
     //Text Instances
     public TextMeshProUGUI PlayerTimeText;
     private float PlayerElapsedTime;
     public TextMeshProUGUI BestTimeText;
-    private float BestElapsedTime = 25f;
+    private float BestElapsedTime = 100f;
     public TextMeshProUGUI TurretsLeftText;
     public TextMeshProUGUI RankText;
     public TextMeshProUGUI BonusText;
@@ -67,17 +66,29 @@ public class Goal : MonoBehaviour
 
             PlayerElapsedTime = timer.ReturnElapsedTime();
             PlayerTimeText.text = timer.ReturnTimerText(PlayerElapsedTime);
-            Debug.Log(PlayerTimeText);
+            Debug.Log(PlayerTimeText.text);
             
 
             //Did the Player beat their best time?
-            if (BestElapsedTime > PlayerElapsedTime)
+            float previousBest = besttimemanager.GetBestTime();
+
+            if (PlayerElapsedTime < previousBest)
             {
                 besttimemanager.SetBestTime(PlayerElapsedTime);
                 BestTimeText.text = PlayerTimeText.text;
-            } else {
-                BestTimeText.text = besttimemanager.GetBestTimeText();
+                Debug.Log("New Best Time: " + BestTimeText.text);
             }
+            else
+            {
+                BestTimeText.text = besttimemanager.GetBestTimeText();
+                Debug.Log("Did not beat best time. Current best: " + BestTimeText.text);
+            }
+
+            Debug.Log("The best time is:" + BestTimeText.text );
+
+            Debug.Log("SThresholdTime: " + SThresholdTime);
+            Debug.Log("AThresholdTime: " + AThresholdTime);
+            Debug.Log("BThresholdTime: " + BThresholdTime);
 
             //Rank Determination
             if (PlayerElapsedTime < SThresholdTime)

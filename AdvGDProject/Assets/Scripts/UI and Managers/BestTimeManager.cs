@@ -17,7 +17,7 @@ public class BestTimeManager : MonoBehaviour
             return;
         }
         Instance = this;
-        //DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
     }
 
     public void SetBestTime(float NewBestTime)
@@ -27,6 +27,7 @@ public class BestTimeManager : MonoBehaviour
         int seconds = Mathf.FloorToInt(BestTimeRecord % 60);
         int milliseconds = Mathf.FloorToInt((BestTimeRecord * 1000) % 1000); // Get milliseconds
         BestTimeRecordText = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliseconds);
+        
     }
 
     public float GetBestTime()
