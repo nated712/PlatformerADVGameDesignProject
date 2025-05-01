@@ -26,13 +26,12 @@ public class Goal : MonoBehaviour
 
 
     [SerializeField] private Timer timer; // Drag and drop Timer object in Inspector
-    [SerializeField] private BestTimeManager besttimemanager; // Drag and drop Timer object in Inspector
 
     void Start()
     {
         ResultScreen.gameObject.SetActive(false);
-
-        BestTimeText.text = besttimemanager.GetBestTimeText();
+        Debug.Log("Instance is null: " + (BestTimeManager.Instance == null));
+        //BestTimeText.text = BestTimeManager.Instance.BestTimeRecordText;
     }
 
     void Update()
@@ -70,17 +69,17 @@ public class Goal : MonoBehaviour
             
 
             //Did the Player beat their best time?
-            float previousBest = besttimemanager.GetBestTime();
+            float previousBest = BestTimeManager.Instance.BestTimeRecord;
 
-            if (PlayerElapsedTime < previousBest)
+            if (PlayerElapsedTime < BestTimeManager.Instance.BestTimeRecord)
             {
-                besttimemanager.SetBestTime(PlayerElapsedTime);
-                BestTimeText.text = PlayerTimeText.text;
+                BestTimeManager.Instance.SetBestTime(PlayerElapsedTime);
+                BestTimeText.text = BestTimeManager.Instance.BestTimeRecordText;
                 Debug.Log("New Best Time: " + BestTimeText.text);
             }
             else
             {
-                BestTimeText.text = besttimemanager.GetBestTimeText();
+                BestTimeText.text =  BestTimeManager.Instance.BestTimeRecordText;
                 Debug.Log("Did not beat best time. Current best: " + BestTimeText.text);
             }
 
