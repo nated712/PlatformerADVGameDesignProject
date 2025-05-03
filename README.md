@@ -1,3 +1,4 @@
+![Gameplay: ](./oilheartgameplaygif.gif)
 Nate Decatur, Jordan Adams
 Hello, this is our project for ITCS 4231/5231, Advanced Game Design.
 
