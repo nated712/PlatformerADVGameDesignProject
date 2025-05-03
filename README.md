@@ -1,5 +1,5 @@
+Made by Nate Decatur and Jordan Adams
 ![Gameplay: ](./oilheartgameplaygif.gif)
-Nate Decatur, Jordan Adams
 Hello, this is our project for ITCS 4231/5231, Advanced Game Design.
 
 Oil Heart is a 3D Platformer where you play as a robot running low on fuel. 
